@@ -1,3 +1,8 @@
+### Build
+
+- For debug mode: `cargo build`
+- For release mode: `cargo build --release`
+
 ### Features
 
 1. Caches only the container image layers, everything else is forwarded to the upstream registry (Authentication, Manifests, Index, Referrers, etc...). This helps also to revalidate with upstream in case a manifest for the same image tag was overwritten (latest tag anyone ?)
@@ -17,7 +22,7 @@ Https support
     - cpu and memory consumption (when running in Linux only - does not work in MacOS because it lacks the /proc/ folder)
 
 ### Security:
-- The pull-through cache does not implement any authentication for the stored blobs, for everything else it relies on the upstream registry, this means that an attacker can potentially download specific container layer by knowing their digest
+- The pull-through cache does not implement any authentication for the stored blobs yet, for everything else it relies on the upstream registry, this means that an attacker can potentially download specific container layer by knowing their digest
 
 ### Example config
 ```YAML
