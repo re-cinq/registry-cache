@@ -503,6 +503,45 @@ dependencies = [
 ]
 
 [[package]]
+name = "cache-registry"
+version = "0.1.0"
+dependencies = [
+ "actix-files",
+ "actix-web",
+ "async-trait",
+ "bytes",
+ "chrono",
+ "config",
+ "futures",
+ "futures-util",
+ "hex",
+ "lazy_static",
+ "log",
+ "notify",
+ "num_cpus",
+ "parking_lot",
+ "prometheus",
+ "regex",
+ "reqwest",
+ "rustls",
+ "rustls-pemfile",
+ "secrecy",
+ "serde",
+ "serde_json",
+ "sha2",
+ "sqlx",
+ "strum",
+ "strum_macros",
+ "tokio",
+ "tokio-stream",
+ "tokio-util",
+ "tracing",
+ "tracing-attributes",
+ "tracing-subscriber",
+ "url",
+]
+
+[[package]]
 name = "cc"
 version = "1.0.83"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1814,45 +1853,6 @@ dependencies = [
  "once_cell",
  "pest",
  "sha2",
-]
-
-[[package]]
-name = "cache-registry"
-version = "0.1.0"
-dependencies = [
- "actix-files",
- "actix-web",
- "async-trait",
- "bytes",
- "chrono",
- "config",
- "futures",
- "futures-util",
- "hex",
- "lazy_static",
- "log",
- "notify",
- "num_cpus",
- "parking_lot",
- "prometheus",
- "regex",
- "reqwest",
- "rustls",
- "rustls-pemfile",
- "secrecy",
- "serde",
- "serde_json",
- "sha2",
- "sqlx",
- "strum",
- "strum_macros",
- "tokio",
- "tokio-stream",
- "tokio-util",
- "tracing",
- "tracing-attributes",
- "tracing-subscriber",
- "url",
 ]
 
 [[package]]
