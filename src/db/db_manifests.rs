@@ -4,7 +4,7 @@ use crate::models::manifest_record::ManifestRecord;
 use crate::registry::digest::Digest;
 
 /// Return the sha256 of the manifest for the specific container image name and tag
-const MANIFEST_FOR_TAG:&str = "SELECT name, tag, reference FROM manifests where name = $1 AND tag = $2;";
+const MANIFEST_FOR_TAG:&str = "SELECT name, tag, reference, size, mime FROM manifests where name = $1 AND tag = $2;";
 
 /// Upsert a record in the manifests table
 const MANIFEST_UPSERT_QUERY: &str = "INSERT INTO manifests (name, tag, reference, size, mime) VALUES ($1, $2, $3, $4, $5) ON CONFLICT(name, tag) DO UPDATE SET reference=EXCLUDED.reference;";
