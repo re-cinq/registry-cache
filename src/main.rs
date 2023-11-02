@@ -2,8 +2,10 @@
 use std::sync::Arc;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use crate::config::app::AppConfig;
-use crate::handlers::command::filesystem::persist::BlobPersistHandler;
-use crate::models::commands::PERSIST_BLOB;
+use crate::db::pool::DBPool;
+use crate::handlers::command::blob::persist::BlobPersistHandler;
+use crate::handlers::command::blob::service::ManifestService;
+use crate::models::commands::{PERSIST_BLOB, PERSIST_MANIFEST};
 use crate::pubsub::command_bus::CommandBus;
 use crate::repository::filesystem::FilesystemStorage;
 
@@ -28,7 +30,7 @@ async fn main() -> std::io::Result<()> {
             tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
                 // axum logs rejections from built-in extractors with the `axum::rejection`
                 // target, at `TRACE` level. `axum::rejection=trace` enables showing those events
-                "cache_registry=info,tower_http=debug,axum::rejection=debug".into()
+                "pier_cache=info,tower_http=debug,axum::rejection=debug".into()
             }),
         )
         .with(tracing_subscriber::fmt::layer())
@@ -49,12 +51,17 @@ async fn main() -> std::io::Result<()> {
         local_command_bus.start(command_receiver).await;
     });
 
+    // Manifest service
+    let manifest_service = ManifestService::new(&config.db).await;
+    let filesystem_storage = Arc::new(FilesystemStorage::new(config.clone()));
+    let blob_handler = BlobPersistHandler::new(filesystem_storage, manifest_service.clone());
+
     // Subscribe the persistence handler
-    let storage = Arc::new(FilesystemStorage::new(config.clone()));
-    command_bus.subscribe(PERSIST_BLOB.to_string(), BlobPersistHandler::new(storage)).await;
+    command_bus.subscribe(PERSIST_BLOB.to_string(), blob_handler.clone()).await;
+    command_bus.subscribe(PERSIST_MANIFEST.to_string(), blob_handler).await;
 
     // Start the API server
-    if let Err(e) = api::server::start(config.clone(), command_bus.clone()).await {
+    if let Err(e) = api::server::start(config.clone(), command_bus.clone(), manifest_service).await {
         tracing::info!("Error shutting down registry cache {}", e);
     }
 

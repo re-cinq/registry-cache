@@ -2,6 +2,7 @@
 use std::collections::HashMap;
 use config::{Config, File};
 use serde::{Deserialize, Serialize};
+use crate::config::db::DBConfig;
 use crate::error::error_kind::ErrorKind;
 use crate::error::registry::RegistryError;
 
@@ -12,7 +13,10 @@ const CONFIG_FILE_NAME:&str = "config.yaml";
 pub struct AppConfig {
     pub api: ApiConfig,
     pub upstreams: Vec<UpstreamConfig>,
-    pub storage: StorageConfig
+    pub storage: StorageConfig,
+
+    #[serde(default)]
+    pub db: DBConfig,
 }
 
 impl From<Config> for AppConfig {

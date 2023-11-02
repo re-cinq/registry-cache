@@ -13,11 +13,12 @@ use crate::api::routes;
 use crate::api::metrics::metrics_handler;
 use crate::api::state::AppState;
 use crate::config::app::AppConfig;
+use crate::handlers::command::blob::service::ManifestService;
 use crate::metrics::register_metrics;
 use crate::pubsub::command_bus::CommandBus;
 use crate::repository::filesystem::FilesystemStorage;
 
-pub async fn start(config: AppConfig, command_bus: Arc<CommandBus>) -> std::io::Result<()> {
+pub async fn start(config: AppConfig, command_bus: Arc<CommandBus>, manifest_service: Arc<ManifestService>) -> std::io::Result<()> {
 
     // TODO: 1. expose the timeout settings to the config
     // TODO: 2. expose the possibility to skip TLS verification
@@ -54,7 +55,8 @@ pub async fn start(config: AppConfig, command_bus: Arc<CommandBus>) -> std::io::
     let bus = command_bus.clone();
 
     // Application state
-    let state = web::Data::new(AppState::new(reqwest_client, command_bus.clone(), app_config.clone(), filesystem_storage));
+    let state = web::Data::new(AppState::new(reqwest_client, command_bus.clone(), app_config.clone(),
+                                             filesystem_storage, manifest_service));
 
     log::info!("starting HTTP server at https://{}", config.api.hostname,);
 

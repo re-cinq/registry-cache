@@ -3,16 +3,20 @@ use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 use bytes::Bytes;
 use tokio::sync::mpsc::UnboundedReceiver;
+use crate::models::types::{ManifestSize, MimeType};
 use crate::pubsub::command::ChannelId;
+use crate::registry::digest::Digest;
 use crate::registry::repository::Repository;
 
 pub const SHUTDOWN:&str = "shutdown";
 pub const PERSIST_BLOB:&str = "persist_blob";
+pub const PERSIST_MANIFEST:&str = "persist_manifest";
 
 #[derive(Debug)]
 pub enum RegistryCommand {
     Shutdown,
     PersistBlob(Repository, UnboundedReceiver<Bytes>),
+    PersistManifest(Repository, Option<Digest>, ManifestSize, MimeType, UnboundedReceiver<Bytes>),
 }
 
 impl RegistryCommand {
@@ -20,6 +24,7 @@ impl RegistryCommand {
         match self {
             RegistryCommand::Shutdown => String::from(SHUTDOWN),
             RegistryCommand::PersistBlob(repo,_) => repo.reference.to_string(),
+            RegistryCommand::PersistManifest(repo, _, _, _, _) => repo.reference.to_string(),
         }
 
     }
@@ -28,6 +33,7 @@ impl RegistryCommand {
         match self {
             RegistryCommand::Shutdown => String::from(SHUTDOWN),
             RegistryCommand::PersistBlob(_,_) => String::from(PERSIST_BLOB),
+            RegistryCommand::PersistManifest(_,_,_,_,_) => String::from(PERSIST_MANIFEST),
         }
 
     }

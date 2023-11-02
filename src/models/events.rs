@@ -2,4 +2,6 @@
 use strum::Display;
 
 #[derive(Clone, Display, Debug)]
-pub enum RegistryEvent {}
+pub enum RegistryEvent {
+    BlobPersisted
+}
