@@ -1,4 +1,4 @@
-[![RegistryCache](https://github.com/giantswarm/registry-cache/actions/workflows/ci.yaml/badge.svg)](https://github.com/giantswarm/registry-cache/actions/workflows/ci.yaml)
+[![RegistryCache](https://github.com/re-cinq/registry-cache/actions/workflows/ci.yaml/badge.svg)](https://github.com/re-cinq/registry-cache/actions/workflows/ci.yaml)
 
 ### Build
 
